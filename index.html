@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Snake</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css?version=1">
+    <script src="js/jquery.min.js?version=1"></script>
+    <script src="js/base.js?version=1"></script>
+    <script src="js/utils.js?version=1"></script>
+    <script src="js/wordz.js?version=1"></script>
+    <script>
+        $(function()
+        {
+            Snake.init()
+        })
+    </script>
+</head>
+
+<body>
+    <div id="main" class="unselectable">
+        <div id="title">S N E K</div>
+        <div id="game_container">
+            <div id="game"></div>
+        </div>
+    </div>
+    <audio src="audio/music.mp3" id="sound_music"></audio>
+    <audio src="audio/fruit.mp3" id="sound_fruit"></audio>
+</body>
