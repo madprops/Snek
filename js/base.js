@@ -19,7 +19,6 @@ Snake.init_variables = function()
     Snake.snake_blocks = []
     Snake.game_paused = false
     Snake.music_started = false
-    Snake.wordz = Wordz()
 }
 
 Snake.create_grid = function()
@@ -172,7 +171,6 @@ Snake.move_snake = function()
     {
         Snake.place_fruit()
         Snake.play_sound("fruit")
-        Snake.change_title()
     }
     
     else
@@ -365,10 +363,4 @@ Snake.play_sound = function(name)
     $(`#sound_${name}`)[0].pause()
     $(`#sound_${name}`)[0].currentTime = 0
     $(`#sound_${name}`)[0].play()
-}
-
-Snake.change_title = function()
-{
-    let sentence = Snake.wordz.make_random_sentence(2, true)
-    $("#title").text(sentence)
 }
