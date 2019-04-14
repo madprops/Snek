@@ -69,3 +69,8 @@ body, html
     -ms-user-select: none;
     user-select: none;
 }
+
+.no_cursor
+{
+    cursor: none !important;
+}

@@ -8,6 +8,7 @@ Snake.init = function()
     Snake.place_fruit()
     Snake.start_snake_movement()
     Snake.start_key_detection()
+    Snake.start_cursor_events()
 }
 
 Snake.init_variables = function()
@@ -344,4 +345,36 @@ Snake.play_sound = function(name)
     $(`#sound_${name}`)[0].pause()
     $(`#sound_${name}`)[0].currentTime = 0
     $(`#sound_${name}`)[0].play()
+}
+
+Snake.start_cursor_events = function()
+{
+    window.onmousemove = function()
+    {
+        Snake.show_mouse_cursor()
+        
+        if(!Snake.modal_open)
+        {
+            Snake.start_hide_mouse_cursor_timeout()
+        }
+    }
+}
+
+Snake.show_mouse_cursor = function()
+{
+    clearTimeout(Snake.hide_cursor_timeout)
+    $("body").removeClass("no_cursor")
+}
+
+Snake.hide_mouse_cursor = function()
+{
+    $("body").addClass("no_cursor")
+}
+
+Snake.start_hide_mouse_cursor_timeout = function()
+{
+    Snake.hide_cursor_timeout = setTimeout(function()
+    {
+        Snake.hide_mouse_cursor()
+    }, 1000)
 }
