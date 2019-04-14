@@ -19,6 +19,7 @@ Snake.init_variables = function()
     Snake.snake_blocks = []
     Snake.game_paused = false
     Snake.music_started = false
+    Snake.fruit_block = false
 }
 
 Snake.create_grid = function()
@@ -57,11 +58,10 @@ Snake.create_grid = function()
 
 Snake.create_snake = function()
 {
-    let x = Snake.get_random_int({min:0, max:Snake.horizontal_blocks - 1})
     let y = Snake.get_random_int({min:0, max:Snake.vertical_blocks - 1})
+    let x = Snake.get_random_int({min:0, max:Snake.horizontal_blocks - 1})
     
     Snake.snake_blocks.push([y, x])
-    Snake.update_snake()
 
     Snake.snake_direction = ""
 
@@ -74,31 +74,10 @@ Snake.create_snake = function()
     {
         Snake.snake_direction = "left"
     }
-}
 
-Snake.update_snake = function()
-{
-    $(".snake_block").each(function()
-    {
-        $(this).removeClass("snake_block")
-    })
-
-    for(let y=0; y<Snake.vertical_blocks; y++)
-    {
-        for(let x=0; x<Snake.horizontal_blocks; x++)
-        {
-            Snake.grid[y][x].used = false
-        }
-    }
-
-    for(let block of Snake.snake_blocks)
-    {
-        let y = block[0]
-        let x = block[1]
-        Snake.grid[y][x].used = true
-        let snake_block = $(Snake.grid[y][x].block)
-        snake_block.addClass("snake_block")
-    }
+    Snake.grid[y][x].used = true
+    let snake_block = $(Snake.grid[y][x].block)
+    snake_block.addClass("snake_block")
 }
 
 Snake.start_snake_movement = function()
@@ -167,59 +146,61 @@ Snake.move_snake = function()
         return false
     }
 
+    let got_fruit = false
+
     if(Snake.grid[new_y][new_x].fruit)
     {
-        Snake.place_fruit()
-        Snake.play_sound("fruit")
+        got_fruit = true
     }
     
     else
     {
-        Snake.snake_blocks.shift()
+        let block = Snake.snake_blocks.shift()
+        let y = block[0]
+        let x = block[1]
+        Snake.grid[y][x].used = false
+        $(Snake.grid[y][x].block).removeClass("snake_block")
     }
 
     Snake.snake_blocks.push([new_y, new_x])
-    Snake.update_snake()
+    Snake.grid[new_y][new_x].used = true
+    $(Snake.grid[new_y][new_x].block).addClass("snake_block")
+
+    if(got_fruit)
+    {
+        Snake.place_fruit()
+        Snake.play_sound("fruit")
+    }
+
     Snake.start_snake_movement()
 }
 
 Snake.place_fruit = function()
 {
-    if(Snake.fruit_coords)
+    if(Snake.fruit_block)
     {
-        let y = Snake.fruit_coords[0]
-        let x = Snake.fruit_coords[1]
-
-        $(Snake.grid[y][x].block).removeClass("fruit")
-        $(Snake.grid[y][x].block).addClass("snake_block")
-        Snake.grid[y][x].fruit = false
+        $(Snake.fruit_block.block).removeClass("fruit")
+        $(Snake.fruit_block.block).addClass("snake_block")
+        Snake.fruit_block.fruit = false
     }
 
-    let y_list = []
-    let x_list = []
+    let available = []
 
-    for(let block of Snake.snake_blocks)
+    for(let row of Snake.grid)
     {
-        let y = block[0]
-        let x = block[1]
-
-        if(!y_list.includes(y))
+        for(let item of row)
         {
-            y_list.push(y)
-        }
-
-        if(!x_list.includes(x))
-        {
-            x_list.push(x)
+            if(!item.used)
+            {
+                available.push(item)
+            }
         }
     }
 
-    let y = Snake.get_random_int({min:0, max:Snake.vertical_blocks - 1, exclude:y_list})
-    let x = Snake.get_random_int({min:0, max:Snake.horizontal_blocks - 1, exclude:x_list})
-    
-    Snake.grid[y][x].fruit = true
-    $(Snake.grid[y][x].block).addClass("fruit")
-    Snake.fruit_coords = [y, x]
+    let block = available[Snake.get_random_int({min:0, max:available.length - 1})]
+    block.fruit = true
+    $(block.block).addClass("fruit")
+    Snake.fruit_block = block
 }
 
 Snake.start_key_detection = function()
