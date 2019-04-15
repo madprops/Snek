@@ -29,6 +29,8 @@ Snake.init_variables = function()
     Snake.music_started = false
     Snake.fruit_block = false
     Snake.fruit_counter = 0
+    Snake.score = 0
+    $("#title").text("S N E K")
 }
 
 Snake.create_grid = function()
@@ -187,9 +189,11 @@ Snake.move_snake = function()
 
     if(got_fruit)
     {
+        Snake.score += 1
         Snake.fruit_counter += 3
         Snake.place_fruit()
         Snake.play_sound("fruit")
+        Snake.update_title()
     }
 
     Snake.start_snake_movement()
@@ -331,7 +335,7 @@ Snake.game_over = function()
 {
     $("#sound_music")[0].pause()
     clearTimeout(Snake.snake_movement_timeout)
-    alert("Game Over")
+    alert(`Score: ${Snake.score}`)
     Snake.game_started = false
 }
 
@@ -403,4 +407,9 @@ Snake.start_hide_mouse_cursor_timeout = function()
     {
         Snake.hide_mouse_cursor()
     }, 1000)
+}
+
+Snake.update_title = function()
+{
+    $("#title").text(Snake.score)
 }
