@@ -2,13 +2,19 @@ const Snake = {}
 
 Snake.init = function()
 {
+    Snake.start_key_detection()
+    Snake.start_cursor_events()
+    Snake.start_game()
+}
+
+Snake.start_game = function()
+{
     Snake.init_variables()
     Snake.create_grid()
     Snake.create_snake()
     Snake.place_fruit()
     Snake.start_snake_movement()
-    Snake.start_key_detection()
-    Snake.start_cursor_events()
+    Snake.game_started = true
 }
 
 Snake.init_variables = function()
@@ -21,10 +27,13 @@ Snake.init_variables = function()
     Snake.game_paused = false
     Snake.music_started = false
     Snake.fruit_block = false
+    Snake.fruit_counter = 0
 }
 
 Snake.create_grid = function()
 {
+    $("#game").html("")
+
     let left = 0
     let top = 0
 
@@ -156,19 +165,28 @@ Snake.move_snake = function()
     
     else
     {
-        let block = Snake.snake_blocks.shift()
-        let y = block[0]
-        let x = block[1]
-        Snake.grid[y][x].used = false
-        $(Snake.grid[y][x].block).removeClass("snake_block")
+        if(Snake.fruit_counter === 0)
+        {
+            let block = Snake.snake_blocks.shift()
+            let y = block[0]
+            let x = block[1]
+            Snake.grid[y][x].used = false
+            $(Snake.grid[y][x].block).removeClass("snake_block")
+        }
     }
 
+    if(Snake.fruit_counter > 0)
+    {
+        Snake.fruit_counter -= 1
+    }
+    
     Snake.snake_blocks.push([new_y, new_x])
     Snake.grid[new_y][new_x].used = true
     $(Snake.grid[new_y][new_x].block).addClass("snake_block")
 
     if(got_fruit)
     {
+        Snake.fruit_counter = 3
         Snake.place_fruit()
         Snake.play_sound("fruit")
     }
@@ -211,6 +229,16 @@ Snake.start_key_detection = function()
         if(!Snake.music_started)
         {
             Snake.start_music()
+        }
+
+        if(!Snake.game_started)
+        {
+            if(e.key === "Enter" || e.key.startsWith("Arrow"))
+            {
+                Snake.start_game()
+                e.preventDefault()
+                return false
+            }
         }
 
         if(!e.repeat)
@@ -303,6 +331,7 @@ Snake.game_over = function()
     $("#sound_music")[0].pause()
     clearTimeout(Snake.snake_movement_timeout)
     alert("Game Over")
+    Snake.game_started = false
 }
 
 Snake.toggle_pause = function()
