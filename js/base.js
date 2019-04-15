@@ -186,7 +186,7 @@ Snake.move_snake = function()
 
     if(got_fruit)
     {
-        Snake.fruit_counter = 3
+        Snake.fruit_counter += 3
         Snake.place_fruit()
         Snake.play_sound("fruit")
     }
