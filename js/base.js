@@ -173,11 +173,11 @@ Snake.move_snake = function()
             Snake.grid[y][x].used = false
             $(Snake.grid[y][x].block).removeClass("snake_block")
         }
-    }
 
-    if(Snake.fruit_counter > 0)
-    {
-        Snake.fruit_counter -= 1
+        else
+        {
+            Snake.fruit_counter -= 1
+        }
     }
     
     Snake.snake_blocks.push([new_y, new_x])
