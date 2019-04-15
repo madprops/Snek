@@ -14,6 +14,7 @@ Snake.start_game = function()
     Snake.create_snake()
     Snake.place_fruit()
     Snake.start_snake_movement()
+    Snake.hide_mouse_cursor()
     Snake.game_started = true
 }
 
@@ -381,11 +382,7 @@ Snake.start_cursor_events = function()
     window.onmousemove = function()
     {
         Snake.show_mouse_cursor()
-        
-        if(!Snake.modal_open)
-        {
-            Snake.start_hide_mouse_cursor_timeout()
-        }
+        Snake.start_hide_mouse_cursor_timeout()
     }
 }
 
