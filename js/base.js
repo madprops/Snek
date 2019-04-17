@@ -242,8 +242,9 @@ Snake.start_key_detection = function()
             {
                 Snake.start_game()
                 e.preventDefault()
-                return false
             }
+            
+            return false
         }
 
         if(!e.repeat)
